@@ -1,0 +1,25 @@
+name: KI News Newsletter
+
+on:
+  schedule:
+    - cron: "0 6 * * *"  # täglich 8:00 Uhr Berlin (CEST = UTC+2)
+  workflow_dispatch:       # manuell auslösbar über GitHub UI
+
+jobs:
+  send-newsletter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Abhängigkeiten installieren
+        run: pip install requests
+
+      - name: KI-News senden
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: python send_ki_news.py
